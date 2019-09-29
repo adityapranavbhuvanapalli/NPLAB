@@ -1,2 +1,2 @@
 # NPLAB
-NP labsets
+Network Programming using C

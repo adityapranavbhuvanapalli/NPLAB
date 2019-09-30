@@ -59,10 +59,10 @@ proc finish {} {
 	set ctr1 0
 	set fid [open lab.nam r]
 	while {[gets $fid line] !=-1} {
-		if{ [string match "*tcp*" $line] }{
+		if { [string match "*tcp*" $line] } {
 			set ctr0 [expr $ctr0 + 1]
 		}
-		if{ string match "*udp*" $line }{
+		if { [string match "*cbr*" $line] } {
 			set ctr1 [expr $ctr1 + 1]
 		}
 	}

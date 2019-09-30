@@ -41,13 +41,13 @@ $cbr1 attach-agent $udp1
 #Attach Null agent to receiver 
 $ns attach-agent $n3 $null3
 
-#Establish connections between senders and receivers
+#Establish connections between senders and receiversz
 $ns connect $udp0 $null3 
 $ns connect $udp1 $null3
 
 #Starting process
-$cbr0 set packetSize_ 500Mb $cbr0 set interval_ 0.005
-$cbr1 set packetSize_ 500Mb $cbr1 set interval_ 0.1
+$cbr0 set packetSize_ 500Mb 
+$cbr0 set interval_ 0.005
 
 proc finish { } { 
 	global ns nf tf 
@@ -61,8 +61,8 @@ proc finish { } {
 		if { [string match "*d*" $line] } { 
 			set ctr [expr $ctr + 1] 
 		} 
-	} puts "No of packets: $ctr"
-
+	} 
+	puts "No of packets: $ctr"
 	exit 0 
 } 
 

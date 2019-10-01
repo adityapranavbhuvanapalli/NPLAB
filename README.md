@@ -1,2 +1,2 @@
 # NPLAB
-Network Programming using C
+Network Programming using C and NS2.

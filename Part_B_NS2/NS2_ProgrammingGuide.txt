@@ -1,0 +1,113 @@
+Step-1:
+In order to execute any NS2 program, we need a new simulator.
+The following command will create a simulator.
+
+	set ns [new Simulator]
+
+Step-2:
+The next step is to create two files (.nam & .tr)
+#Note: r indicates read mode
+.nam - network animation file (for the animation)
+.tr  - trace file (for log)
+Follow the commands:
+
+	set nf [open anim_file.nam r]
+	set tf [open trace_file.tr r]
+	$ns namtrace-all $nf  
+	$ns trace-all $tf
+
+Step-3:
+Now we have to establish the network environment.
+
+Step-3.1:(Establish Network Layer)
+Creating the nodes and links.
+
+To create nodes, follow the command:
+
+	set node_name [$ns node]
+
+To create links between the nodes, follow the command:
+
+	$ns duplex-link $node_1 $node_2 bandwidth_in_Mb latency_in_ms DropTail
+	
+	EX: $ns duplex-link $n0 $n1 10Mb 300ms DropTail
+
+Step-3.2:(Establish Transport Layer)
+Now create the transport layer protocols associated with the nodes.
+Transport Layer protocols can be:
+1. TCP
+2. UDP
+At receiver's end,
+1. NULL (used with UDP)
+2. TCPS - TCP Sink (used with TCP)
+
+General syntax for creating transport layer:
+	
+	set tlayer_name [new Agent/Protocol_Name]
+
+For TCP:
+
+	set tcp [new Agent/TCP]
+
+For UDP:
+
+	set udp [new Agent/UDP]
+
+For TCPS:
+
+	set tcps [new Agent/TCPSink]
+
+For NULL:
+
+	set null [new Agent/Null]
+
+Now attach the transport layers to the network layers i.e., the nodes created.
+
+	$ns attach-agent $node_name $tlayer_name
+
+Step-3.3:(Establish Application Layer)
+Create the application layer traffic for the nodes and attach them to transport layers
+There are several application layer protocols like
+1. CBR - Constant Bit Rate		(used with UDP)
+2. FTP - File Transfer Protocol (used with TCP)
+3. TELNET - Telephone Network	(used with TCP)
+
+
+
+General Syntax for creating application layer traffic
+
+	set alayer_name [new Application/Path_Of_Protocol]
+
+For CBR:
+	
+	set cbr [new Application/Traffic/CBR]
+
+For FTP:
+
+	set cbr [new Application/FTP]
+
+For TELNET:
+
+	set telnet [new Application/Telnet]
+
+Now attach the application layers to the transport layers
+
+	$alayer_name attach-agent $tlayer_name
+
+Step-4:
+Connect nodes
+
+	$ns connect $tlayer_name_1 $tlayer_name_2
+
+where
+$tlayer_name_1 - sender's transport layer
+$tlayer_name_2 - receiver's transport layer
+
+Now the network is established and we have to start sending packets.
+
+
+
+
+ 	
+
+

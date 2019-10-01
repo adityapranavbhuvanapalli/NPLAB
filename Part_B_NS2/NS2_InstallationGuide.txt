@@ -1,7 +1,0 @@
-For installing NS2 in Linux(sudo), copy the following commands in the terminal:
-
-sudo apt-get install ns2
-sudo apt-get install nam
-sudo apt-get install tcl
-
-This will install the required softwares for NS2.

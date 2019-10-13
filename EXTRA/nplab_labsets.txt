@@ -1,0 +1,710 @@
+//linkstate algorithm
+
+#include<stdio.h>
+#include<stdlib.h>
+#define inf 999
+
+int cost[10][10],n;
+int parent[10];
+int spath (int s, int d)	//s - source , d - destination
+{
+    struct path
+    {
+        int len;
+        enum {no,yes} visited;	//no - 0 , yes - 1
+    }state[10];
+
+    int i,minind,j,num=2,min=inf;
+
+	//Initialise
+    for(i=1;i<=n;i++)
+    {
+        state[i].visited=no;
+        state[i].len=cost[s][i];	//Initial cost from source
+		if(cost[s][i]!=inf)	parent[i] = s;
+    }
+    state[s].visited=yes;	//Because source is already visited 
+
+	//Dijkstra
+    while(num<=n)
+    {
+        min=inf;
+		//Finding index of min path not visited 
+        for(i=1;i<=n;i++)
+        {
+            if(state[i].visited==no && state[i].len<min)
+            {
+                min=state[i].len;
+                minind=i;
+            }
+        }
+	
+        state[minind].visited=yes;
+        num++;
+
+		//Updating the cost
+        for(j=1;j<=n;j++)
+        {
+            if(state[minind].len + cost[minind][j]<state[j].len && state[j].visited==no)
+            {
+                state[j].len=state[minind].len+cost[minind][j];
+				parent[j]=minind;
+            }
+        }
+    }
+    return state[d].len;
+}
+
+int main()
+{
+    int i,j,min,d,node;
+    char src;
+    printf("Enter number of nodes : ");
+    scanf("%d",&n);
+    printf("Enter the Cost Matrix : (0 for inf)\n");
+    for(i=1;i<=n;i++)
+    {
+        for(j=1;j<=n;j++)
+        {
+             scanf("%d",&cost[i][j]);
+             if(cost[i][j]==0 && i!=j)
+             {
+                cost[i][j]=inf;
+             }
+        } 
+    }
+    printf("Link State Protocol");
+    for(i=1;i<=n;i++)
+    {
+        printf("\n**** From Node = %c****\n",64+i);
+        printf("Node\tCost\n");
+        for(j=1;j<=n;j++)
+        {   
+            if(cost[i][j]!=0 && cost[i][j]!=inf)
+                printf("%c\t%d\n",64+j,cost[i][j]);
+        }
+    }
+
+    printf("Enter the source : ");
+    scanf(" %c",&src);
+
+    for(i=1;i<=n;i++)                                                                           
+    {
+        min=spath(src-64,i);
+        printf("Min path from %c to %c = %d\t",src,64+i,min);
+		node=i;
+		printf("%c", 64+node);
+        while( node != (src-64))
+        {
+            printf(" <- %c", 64+parent[node]);
+            node = parent[node];
+        }
+		printf("\n");
+    }
+    return 0;
+}
+
+
+/*
+****************OUTPUT**********************
+Enter number of nodes : 9
+Enter the Cost Matrix : (0 for inf)
+0     4     999   999   999   999   999   8     999
+4     0     8     999   999   999   999   11    999
+999   8     0     7     999   4     999   999   2
+999   999   7     0     9     14    999   999   999
+999   999   999   9     0     10    999   999   999
+999   999   4     14    10    0     2     999   999
+999   999   999   999   999   2     0     1     6
+8     11    999   999   999   999   1     0     7
+999   999   2     999   999   999   6     7     0
+Link State Protocol
+**** From Node = A****
+Node	Cost
+B	4
+H	8
+**** From Node = B****
+Node	Cost
+A	4
+C	8
+H	11
+**** From Node = C****
+Node	Cost
+B	8
+D	7
+F	4
+I	2
+**** From Node = D****
+Node	Cost
+C	7
+E	9
+F	14
+**** From Node = E****
+Node	Cost
+D	9
+F	10
+**** From Node = F****
+Node	Cost
+C	4
+D	14
+E	10
+G	2
+**** From Node = G****
+Node	Cost
+F	2
+H	1
+I	6
+**** From Node = H****
+Node	Cost
+A	8
+B	11
+G	1
+I	7
+**** From Node = I****
+Node	Cost
+C	2
+G	6
+H	7
+Enter the source : D
+Min path from D to A = 19		A <- B <- C <- D
+Min path from D to B = 15		B <- C <- D
+Min path from D to C = 7		C <- D
+Min path from D to D = 0		D
+Min path from D to E = 9		E <- D
+Min path from D to F = 11		F <- C <- D
+Min path from D to G = 13		G <- F <- C <- D
+Min path from D to H = 14		H <- G <- F <- C <- D
+Min path from D to I = 9		I <- C <- D
+********************************************
+*/
+
+//framesort
+
+#include<iostream>
+#include<cmath>
+#include<stdlib.h>
+using namespace std;
+
+typedef struct
+{
+    string data;
+    int randNo;
+    int seqNo;
+    int size;
+}frame;
+
+void insertSort(frame f[],int n,char ch)
+{
+    int i,j;
+    frame v;
+    for(i=1;i<n;i++)
+    {
+        v=f[i];
+        j=i-1;    
+        while(j>=0 && ((f[j].randNo>v.randNo &&  ch=='r') || (f[j].seqNo>v.seqNo &&  ch=='s')))
+        {
+            f[j+1]=f[j];
+            j--;
+        }   
+		f[j+1]=v; 
+    }
+}
+
+void display(frame f[],int n)
+{
+	int i;
+	cout<<"Sequence\tRandom\tLength\tPacket"<<endl;
+	cout<<"------------------------------------------"<<endl;
+    for(i=0;i<n;i++)
+        cout<<f[i].seqNo<<"\t\t"<<f[i].randNo<<"\t"<<f[i].size<<"\t"<<f[i].data<<endl;	
+	cout<<"------------------------------------------"<<endl;
+}
+
+int main()
+{
+    string msg,recMsg="";
+    int maxFrLen;
+    int i=0,j=0,n=0;
+	cout<<"Enter msg : ";cin>>msg;
+	cout<<"Enter len : ";cin>>maxFrLen;	
+    frame f[msg.length()];
+	
+	//Dividing message into frames
+    while(j<msg.length())
+    {
+        f[n].randNo=rand()%100;
+        f[n].seqNo=n+1;
+        f[n].size=rand()%maxFrLen+1;
+        f[n].data=msg.substr(j,f[n].size);
+        j+=f[n].size;
+        n++;
+    }
+
+	//Displaying Results
+	cout<<"***Divided into Frames***"<<endl;
+	display(f,n);
+
+	insertSort(f,n,'r');		//'r' indicates randomised sort
+
+	cout<<"***Received as***"<<endl;
+    display(f,n);
+
+	insertSort(f,n,'s');		//'s' indicates sequential sort
+	
+	cout<<"***Frame Reconstruction***"<<endl;
+	cout<<"Receiver End"<<endl;
+    display(f,n);
+	
+	for(i=0;i<n;i++)
+		recMsg.append(f[i].data);
+	cout<<"Received Message = "<<recMsg<<endl;	
+
+    return 0;
+}
+
+
+//TCP client.c****\n
+
+
+#include <netdb.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+#include <sys/socket.h> 
+#define SA struct sockaddr 
+
+void clientFn(int sockfd)
+{
+	char buff[100];
+	bzero(buff, 100); //Clear the buffer
+	printf("Enter file name : ");	
+	scanf("%s",buff);
+	write(sockfd, buff, 100); //Send file name to server
+	do
+	{
+		//bzero(buff, 100);
+		read(sockfd, buff, 100); //Read file content from server
+		puts(buff);
+	}
+	while(strcmp(buff,""));
+}
+
+int main() 
+{ 
+	int sockfd; 
+	struct sockaddr_in server; 
+
+	// Creation of socket
+	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
+
+	// Clear the socket variable
+	bzero(&server, sizeof(server)); 
+
+	// Assign IP and port to the socket 
+	server.sin_family = AF_INET; 
+	server.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+	server.sin_port = htons(8080); 
+
+	// Connect to server
+	connect(sockfd, (SA*)&server, sizeof(server));
+
+	// Communicate with server
+	clientFn(sockfd); 
+
+	// Close the socket 
+	close(sockfd); 
+} 
+
+//server.c
+
+#include <netdb.h> 
+#include <netinet/in.h> 
+#include <stdlib.h> 
+#include <string.h> 
+#include <sys/socket.h> 
+#include <sys/types.h> 
+#include <stdio.h>
+#define SA struct sockaddr 
+
+void serverFn(int sockfd)
+{
+	char buff[100];
+	FILE *fp;
+	bzero(buff, 100); //Clear the buffer
+	read(sockfd, buff, sizeof(buff)); //Read from client
+	printf("File name from client : %s\n",buff);
+	fp=fopen(buff,"r");
+	bzero(buff, 100);	
+	while(fgets(buff,100,fp)!=-1)
+	{
+		write(sockfd, buff, sizeof(buff)); //Write to client
+		bzero(buff, 100);
+	}
+	fclose(fp);
+}
+ 
+int main() 
+{ 
+	int sockfd, connfd, len; 
+	struct sockaddr_in server, client; 
+
+	// Creation of socket
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+	// Clear the socket variable
+	bzero(&server, sizeof(server)); 
+
+	// Assign IP and port of Server Socket 
+	server.sin_family = AF_INET; 
+	server.sin_addr.s_addr = INADDR_ANY; 
+	server.sin_port = htons(8080); 
+
+	// Bind socket to port
+	bind(sockfd, (SA*)&server, sizeof(server));
+
+	// Wait for Client 
+	listen(sockfd, 5);
+	len = sizeof(client); 
+	connfd = accept(sockfd, (SA*)&client, &len);
+
+	// Communicate with client 
+	serverFn(connfd); 
+
+	// Close the socket 
+	close(sockfd); 
+} 
+
+//UDP server.c
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+#include <sys/types.h> 
+#include <sys/socket.h> 
+#include <arpa/inet.h> 
+#include <netinet/in.h> 
+
+int main() 
+{ 
+	int sockfd, len, n;  
+	char buff[100]; 
+	struct sockaddr_in server, client; 
+	
+	// Creation of socket
+	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+
+	// Clear content of server and client 
+	bzero(&server, sizeof(server));
+	bzero(&client, sizeof(client));
+	
+	// Server info 
+	server.sin_family = AF_INET;
+	server.sin_addr.s_addr = INADDR_ANY; 
+	server.sin_port = htons(8080); 
+	
+	// Bind server to the socket
+	bind(sockfd, (const struct sockaddr *)&server, sizeof(server));
+
+	// UDP Receive
+	n = recvfrom(sockfd, buff, 100, MSG_WAITALL, ( struct sockaddr *) &client, &len); 
+	buff[n] = '\0'; 
+	printf("Client : %s\n", buff); 
+	
+	strcpy(buff,"Hello from the other side. Response from server.");
+	// UDP Send
+	sendto(sockfd, buff, strlen(buff), MSG_CONFIRM, (const struct sockaddr *) &client, len); 
+
+	printf("Message sent to client.\n"); 
+	return 0; 
+} 
+
+
+//client.c****\n
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <string.h> 
+#include <sys/types.h> 
+#include <sys/socket.h> 
+#include <arpa/inet.h> 
+#include <netinet/in.h> 
+
+int main() 
+{ 
+	int sockfd, n, len;; 
+	char buff[100]="Hello from the other side. Request from client"; 
+	struct sockaddr_in server; 
+
+	// Creation of socket
+	sockfd = socket(AF_INET, SOCK_DGRAM, 0); 
+
+	// Clear the content of server
+	bzero(&server, sizeof(server));
+	
+	// Server Info
+	server.sin_family = AF_INET; 
+	server.sin_addr.s_addr = INADDR_ANY;  
+	server.sin_port = htons(8080); 
+	
+	//UDP Send
+	sendto(sockfd, buff, strlen(buff), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server)); 
+	printf("Message sent to server\n"); 
+	
+	//UDP Receive
+	n = recvfrom(sockfd, buff, 100, MSG_WAITALL, (struct sockaddr *) &server, &len); 
+	buff[n] = '\0'; 
+	printf("Server : %s\n", buff); 
+
+	close(sockfd); 
+	return 0; 
+} 
+
+///////////////////////////////////////////////////////
+
+
+partb1-udp no of packets.....
+
+#Initialise new simulator
+set ns [new Simulator]
+#nf -> lab.tr in write mode 	
+set nf [open lab.tr w] 	
+#tf -> lab.nam in write mode
+set tf [open lab.nam w]	
+
+$ns trace-all $nf  
+$ns namtrace-all $tf
+
+#Create nodes
+set n0 [$ns node] 
+set n1 [$ns node] 
+set n2 [$ns node] 
+set n3 [$ns node]
+
+#Initialise Application Layer Traffic (Constant Bit Rate) for senders
+set cbr0 [new Application/Traffic/CBR] 
+set cbr1 [new Application/Traffic/CBR] 
+
+#Initialise Transport Layer Protocols (UDP) for senders
+set udp0 [new Agent/UDP] 
+set udp1 [new Agent/UDP]
+
+#Initialise a Null agent for receiver
+set null3 [new Agent/Null]
+
+#Establish links between the nodes.
+$ns duplex-link $n0 $n2 10Mb 300ms DropTail 
+$ns duplex-link $n1 $n2 10Mb 300ms DropTail 
+$ns duplex-link $n2 $n3 1Mb 300ms DropTail
+#Attach Transport Layer Protocol to Network Layer
+$ns attach-agent $n0 $udp0 
+$ns attach-agent $n1 $udp1  
+$ns attach-agent $n3 $null3
+
+#Attach Application Layer Traffic to Transport Layer Protocol 
+$cbr0 attach-agent $udp0 
+$cbr1 attach-agent $udp1 
+
+#Establish connections between senders and receiversz
+$ns connect $udp0 $null3 
+$ns connect $udp1 $null3
+
+#Starting process
+$cbr0 set packetSize_ 500Mb 
+$cbr0 set interval_ 0.005
+
+proc finish { } { 
+	global ns nf tf 
+	$ns flush-trace 
+	exec nam lab.nam & 
+	close $tf 
+	close $nf 
+	set ctr 0 
+	set fid [open lab.tr r] 
+	while {[gets $fid line] != -1} { 
+		if { [string match "*d*" $line] } { 
+			set ctr [expr $ctr + 1] 
+		} 
+	} 
+	puts "No of packets: $ctr"
+	exit 0 
+} 
+
+$ns at 0.01 "$cbr0 start" 
+$ns at 0.01 "$cbr1 start" 
+$ns at 5.0 "finish" 
+$ns run
+
+
+//partb-2
+
+#New Simulator
+set ns [new Simulator]	
+#tf -> lab.tr in write mode
+set tf [open lab.tr w]	
+#nf -> lab.nam in write mode
+set nf [open lab.nam w]	
+
+$ns trace-all $tf
+$ns namtrace-all $nf
+
+#Create Nodes
+set n0 [$ns node]
+set n1 [$ns node]
+set n2 [$ns node]
+set n3 [$ns node]
+
+#Initialise Transport Layer Protocols
+set tcp0 [new Agent/TCP]
+set udp1 [new Agent/UDP]
+set tcps3 [new Agent/TCPSink]
+set null3 [new Agent/Null]
+
+#Initialise Application Layer Protocols
+set ftp0 [new Application/FTP]
+set cbr1 [new Application/Traffic/CBR]
+
+#Establish links between the nodes
+$ns duplex-link $n0 $n2 100Mb 1ms DropTail
+$ns duplex-link $n1 $n2 100Mb 1ms DropTail
+$ns duplex-link $n2 $n3 100Mb 1ms DropTail
+
+#Things get crazy from here
+#Attach transport layer protocols to network layer
+
+#n1,n2 are senders
+$ns attach-agent $n0 $tcp0  
+$ns attach-agent $n1 $udp1
+
+#n3 is receiver
+$ns attach-agent $n3 $tcps3 
+$ns attach-agent $n3 $null3
+
+#Attach application layer protocols to transport layer
+$ftp0 attach-agent $tcp0
+$cbr1 attach-agent $udp1
+
+#Connection between nodes (through transport layer)
+$ns connect $udp1 $null3
+$ns connect $tcp0 $tcps3
+
+#Process
+proc finish {} {
+	global ns nf tf
+	$ns flush-trace
+	exec nam lab.nam &
+	close $nf
+	close $tf
+	set ctr0 0
+	set ctr1 0
+	set fid [open lab.nam r]
+	while {[gets $fid line] !=-1} {
+		if { [string match "*tcp*" $line] } {
+			set ctr0 [expr $ctr0 + 1]
+		}
+		if { [string match "*cbr*" $line] } {
+			set ctr1 [expr $ctr1 + 1]
+		}
+	}
+	puts "No of tcp : $ctr0"
+	puts "No of udp : $ctr1"
+	exit 0
+}
+
+$ns at 0.01 "$ftp0 start"
+$ns at 0.01 "$cbr1 start"
+$ns at 5.0 "finish"
+$ns run
+
+////////////////////////////////////////////////
+partb-3
+
+set ns [new Simulator]
+
+set nf [open lab.nam w]
+set tf [open lab.tr w]
+
+$ns trace-all $tf
+$ns namtrace-all $nf
+
+#Create nodes
+set n0 [$ns node]
+set n1 [$ns node]
+set n2 [$ns node]
+set n3 [$ns node]
+set n4 [$ns node]
+set n5 [$ns node]
+
+#Initialise transport layer protocols 
+set tcp0 [new Agent/TCP]
+set tcp1 [new Agent/TCP]
+set sink3 [new Agent/TCPSink]
+set sink5 [new Agent/TCPSink]
+
+#Initialise application layer protocols
+set ftp0 [new Application/FTP]
+set telnet1 [new Application/Telnet]
+
+#Establish links between the nodes
+$ns duplex-link $n0 $n2 100Mb 300ms DropTail
+$ns duplex-link $n1 $n2 100Mb 300ms DropTail
+$ns duplex-link $n3 $n2 100Mb 300ms DropTail
+$ns duplex-link $n4 $n2 100Mb 300ms DropTail
+$ns duplex-link $n4 $n5 100Mb 300ms DropTail
+
+#Attach transport layer protocols to network layer 
+$ns attach-agent $n0 $tcp0
+$ns attach-agent $n1 $tcp1
+$ns attach-agent $n3 $sink3
+$ns attach-agent $n5 $sink5
+
+#Attach application layer protocols to transport layer
+$ftp0 attach-agent $tcp0
+$telnet1 attach-agent $tcp1
+
+#Connect the nodes
+$ns connect $tcp0 $sink3
+$ns connect $tcp1 $sink5
+
+$telnet1 set packetSize_ 1000Mb
+$telnet1 set interval_ 0.0001
+
+#Process
+proc finish {} {
+    global ns nf tf
+    $ns flush-trace
+    exec nam lab.nam &
+    set fid [open lab.nam r]
+    close $nf
+    close $tf
+    set ctr0 0
+    set ctr1 0
+    set thr0 0
+    set thr1 0
+    set fid [open lab.tr r]
+    while {[gets $fid line] != -1} {
+	    if {[string match "*r*" $line]} {
+		    set fields [regexp -all -inline {\S+} $line]
+		    set c2 [lindex $fields 2]
+		    set c3 [lindex $fields 3]
+		    if { [expr $c2==2] && [expr $c3==3] } {
+			    set ctr0 [expr $ctr0 + 1]
+		    }
+		    if { [expr $c2==4] && [expr $c3==5] } {
+			    set ctr1 [expr $ctr1 + 1]
+		    }		
+	    }
+   }
+    set thr0 [expr $ctr0/5]
+    set thr1 [expr $ctr1/5]
+    puts "No of packets FTP: $ctr0"
+    puts "Throughput FTP: $thr0"
+    puts "No of packets TELNET: $ctr1"
+    puts "Throughput TELNET: $thr1"
+    exit 0
+}
+
+$ns at 0.01 "$ftp0 start"
+$ns at 0.01 "$telnet1 start"
+$ns at 5.0 "finish"
+$ns run
+////////////////////////////////////

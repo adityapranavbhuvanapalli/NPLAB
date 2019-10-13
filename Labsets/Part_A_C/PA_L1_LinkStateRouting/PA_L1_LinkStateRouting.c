@@ -4,7 +4,7 @@
 
 int cost[10][10],n;
 int parent[10];
-int spath(int s,int d)
+int spath (int s, int d)	//s - source , d - destination
 {
     struct path
     {

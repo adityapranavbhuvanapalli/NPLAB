@@ -34,28 +34,24 @@ $ns lossmodel $err $n3 $n6
 $err set rate_ 0.2
 
 proc finish { } {
-global ns nf tf
-$ns flush-trace
-exec nam lab.nam &
-close $tf
-close $nf
-set ctr0 0
-set thr0 0
-set fid [open lab.tr r]
-while {[gets $fid line] != -1} {
-	if { [string match "*r*" $line] } {
-		set fields [regexp -all -inline {\S+} $line]
-		set c2 [lindex $fields 2]
-		set c3 [lindex $fields 3]
-		if { [expr $c2==8] && [expr $c3==5] } {
-			set ctr0 [expr $ctr0 + 1]
+	exec nam lab.nam &
+	set ctr0 0
+	set thr0 0
+	set fid [open lab.tr r]
+	while {[gets $fid line] != -1} {
+		if { [string match "*r*" $line] } {
+			set fields [regexp -all -inline {\S+} $line]
+			set c2 [lindex $fields 2]
+			set c3 [lindex $fields 3]
+			if { [expr $c2==8] && [expr $c3==5] } {
+				set ctr0 [expr $ctr0 + 1]
+			}
 		}
 	}
-}
-set thr0 [expr $ctr0/5]
-puts "No of packets: $ctr0"
-puts "Throughput: $thr0"
-exit 0
+	set thr0 [expr $ctr0/5]
+	puts "No of packets: $ctr0"
+	puts "Throughput: $thr0"
+	exit 0
 }
 $ns at 0.01 "$cbr1 start"
 $ns at 5.0 "finish"

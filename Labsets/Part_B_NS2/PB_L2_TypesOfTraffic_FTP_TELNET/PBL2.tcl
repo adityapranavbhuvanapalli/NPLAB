@@ -52,7 +52,6 @@ $telnet1 set interval_ 0.0001
 #Process
 proc finish {} {
     exec nam lab.nam &
-    set fid [open lab.nam r]
     set ctr0 0
     set ctr1 0
     set thr0 0

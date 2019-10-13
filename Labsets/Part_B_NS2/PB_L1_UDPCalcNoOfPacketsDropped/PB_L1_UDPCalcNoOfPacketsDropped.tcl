@@ -38,7 +38,7 @@ $ns attach-agent $n3 $null3
 $cbr0 attach-agent $udp0 
 $cbr1 attach-agent $udp1 
 
-#Establish connections between senders and receiversz
+#Establish connections between senders and receivers
 $ns connect $udp0 $null3 
 $ns connect $udp1 $null3
 
@@ -47,14 +47,10 @@ $cbr0 set packetSize_ 500Mb
 $cbr0 set interval_ 0.005
 
 proc finish { } { 
-	global ns nf tf 
-	$ns flush-trace 
 	exec nam lab.nam & 
-	close $tf 
-	close $nf 
 	set ctr 0 
 	set fid [open lab.tr r] 
-	while {[gets $fid line] != -1} { 
+	while { [gets $fid line] != -1 } { 
 		if { [string match "*d*" $line] } { 
 			set ctr [expr $ctr + 1] 
 		} 

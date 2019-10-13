@@ -51,12 +51,8 @@ $telnet1 set interval_ 0.0001
 
 #Process
 proc finish {} {
-    global ns nf tf
-    $ns flush-trace
     exec nam lab.nam &
     set fid [open lab.nam r]
-    close $nf
-    close $tf
     set ctr0 0
     set ctr1 0
     set thr0 0

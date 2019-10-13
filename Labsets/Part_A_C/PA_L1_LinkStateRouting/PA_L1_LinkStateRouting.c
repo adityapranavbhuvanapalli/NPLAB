@@ -3,13 +3,13 @@
 #define inf 999
 
 int cost[10][10],n;
-
+int parent[10];
 int spath(int s,int d)
 {
     struct path
     {
         int len;
-        enum{notvisited,visited}label;
+        enum {no,yes} visited;	//no - 0 , yes - 1
     }state[10];
 
     int i,minind,j,num=2,min=inf;
@@ -17,10 +17,11 @@ int spath(int s,int d)
 	//Initialise
     for(i=1;i<=n;i++)
     {
-        state[i].label=notvisited;
+        state[i].visited=no;
         state[i].len=cost[s][i];	//Initial cost from source
+		if(cost[s][i]!=inf)	parent[i] = s;
     }
-    state[s].label=visited;	//Because source is a visited 
+    state[s].visited=yes;	//Because source is already visited 
 
 	//Dijkstra
     while(num<=n)
@@ -29,22 +30,23 @@ int spath(int s,int d)
 		//Finding index of min path not visited 
         for(i=1;i<=n;i++)
         {
-            if(state[i].label==notvisited && state[i].len<min)
+            if(state[i].visited==no && state[i].len<min)
             {
                 min=state[i].len;
                 minind=i;
             }
         }
 	
-        state[minind].label=visited;
+        state[minind].visited=yes;
         num++;
 
 		//Updating the cost
         for(j=1;j<=n;j++)
         {
-            if(state[minind].len + cost[minind][j]<state[j].len && state[j].label==notvisited)
+            if(state[minind].len + cost[minind][j]<state[j].len && state[j].visited==no)
             {
                 state[j].len=state[minind].len+cost[minind][j];
+				parent[j]=minind;
             }
         }
     }
@@ -53,7 +55,7 @@ int spath(int s,int d)
 
 int main()
 {
-    int i,j,min,d;
+    int i,j,min,d,node;
     char src;
     printf("Enter number of nodes : ");
     scanf("%d",&n);
@@ -87,7 +89,15 @@ int main()
     for(i=1;i<=n;i++)                                                                           
     {
         min=spath(src-64,i);
-        printf("Min path from %c to %c =%d\n",src,64+i,min);
+        printf("Min path from %c to %c = %d\t",src,64+i,min);
+		node=i;
+		printf("%c", 64+node);
+        while( node != (src-64))
+        {
+            printf(" <- %c", 64+parent[node]);
+            node = parent[node];
+        }
+		printf("\n");
     }
     return 0;
 }
@@ -163,15 +173,16 @@ C	2
 G	6
 H	7
 Enter the source : D
-Min path from D to A =19
-Min path from D to B =15
-Min path from D to C =7
-Min path from D to D =0
-Min path from D to E =9
-Min path from D to F =11
-Min path from D to G =13
-Min path from D to H =14
-Min path from D to I =9	
+Min path from D to A = 19		A <- B <- C <- D
+Min path from D to B = 15		B <- C <- D
+Min path from D to C = 7		C <- D
+Min path from D to D = 0		D
+Min path from D to E = 9		E <- D
+Min path from D to F = 11		F <- C <- D
+Min path from D to G = 13		G <- F <- C <- D
+Min path from D to H = 14		H <- G <- F <- C <- D
+Min path from D to I = 9		I <- C <- D
+
 
 ********************************************
 */

@@ -6,7 +6,6 @@
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #include <stdio.h>
-#define PORT 8080 
 #define SA struct sockaddr 
 
 void serverFn(int sockfd)
@@ -40,7 +39,7 @@ int main()
 	// Assign IP and port of Server Socket 
 	server.sin_family = AF_INET; 
 	server.sin_addr.s_addr = htonl(INADDR_ANY); 
-	server.sin_port = htons(PORT); 
+	server.sin_port = htons(8080); 
 
 	// Bind socket to port
 	bind(sockfd, (SA*)&server, sizeof(server));

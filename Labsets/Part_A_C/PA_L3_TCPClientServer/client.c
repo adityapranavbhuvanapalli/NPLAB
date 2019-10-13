@@ -4,7 +4,6 @@
 #include <stdlib.h> 
 #include <string.h> 
 #include <sys/socket.h> 
-#define PORT 8080 
 #define SA struct sockaddr 
 
 void clientFn(int sockfd)
@@ -16,7 +15,7 @@ void clientFn(int sockfd)
 	write(sockfd, buff, 100); //Send file name to server
 	do
 	{
-		bzero(buff, 100);
+		//bzero(buff, 100);
 		read(sockfd, buff, 100); //Read file content from server
 		puts(buff);
 	}
@@ -25,7 +24,7 @@ void clientFn(int sockfd)
 
 int main() 
 { 
-	int sockfd, connfd; 
+	int sockfd; 
 	struct sockaddr_in server; 
 
 	// Creation of socket
@@ -37,7 +36,7 @@ int main()
 	// Assign IP and port to the socket 
 	server.sin_family = AF_INET; 
 	server.sin_addr.s_addr = inet_addr("127.0.0.1"); 
-	server.sin_port = htons(PORT); 
+	server.sin_port = htons(8080); 
 
 	// Connect to server
 	connect(sockfd, (SA*)&server, sizeof(server));

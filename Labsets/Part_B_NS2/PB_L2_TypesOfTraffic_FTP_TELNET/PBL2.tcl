@@ -49,7 +49,7 @@ $ns connect $tcp1 $sink5
 $telnet1 set packetSize_ 1000Mb
 $telnet1 set interval_ 0.0001
 
-#Process #
+#Process
 proc finish {} {
     exec nam lab.nam &
     set fid [open lab.nam r]

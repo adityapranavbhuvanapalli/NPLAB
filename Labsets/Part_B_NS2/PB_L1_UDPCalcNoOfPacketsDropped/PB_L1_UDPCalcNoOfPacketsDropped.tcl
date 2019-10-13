@@ -29,13 +29,12 @@ set null3 [new Agent/Null]
 $ns duplex-link $n0 $n2 10Mb 300ms DropTail 
 $ns duplex-link $n1 $n2 10Mb 300ms DropTail 
 $ns duplex-link $n2 $n3 1Mb 300ms DropTail
-
-#Attach Application Layer Traffic to Transport Layer Protocol 
+#Attach Transport Layer Protocol to Network Layer
 $ns attach-agent $n0 $udp0 
 $ns attach-agent $n1 $udp1  
 $ns attach-agent $n3 $null3
 
-#Attach Transport Layer Protocol to Network Layer
+#Attach Application Layer Traffic to Transport Layer Protocol 
 $cbr0 attach-agent $udp0 
 $cbr1 attach-agent $udp1 
 

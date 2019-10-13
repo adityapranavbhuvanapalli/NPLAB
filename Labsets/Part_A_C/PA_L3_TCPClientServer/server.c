@@ -38,7 +38,7 @@ int main()
 
 	// Assign IP and port of Server Socket 
 	server.sin_family = AF_INET; 
-	server.sin_addr.s_addr = htonl(INADDR_ANY); 
+	server.sin_addr.s_addr = INADDR_ANY; 
 	server.sin_port = htons(8080); 
 
 	// Bind socket to port

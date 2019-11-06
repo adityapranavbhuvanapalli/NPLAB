@@ -4,7 +4,7 @@
 
 int cost[10][10],n;
 int parent[10];
-int spath (int s, int d)	//s - source , d - destination
+int dijkstra (int s, int d)	//s - source , d - destination
 {
     struct path
     {
@@ -88,7 +88,7 @@ int main()
 
     for(i=1;i<=n;i++)                                                                           
     {
-        min=spath(src-64,i);
+        min=dijkstra(src-64,i);
         printf("Min path from %c to %c = %d\t",src,64+i,min);
 		node=i;
 		printf("%c", 64+node);

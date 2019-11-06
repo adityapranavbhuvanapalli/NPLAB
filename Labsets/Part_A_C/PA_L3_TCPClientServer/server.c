@@ -1,53 +1,40 @@
 //Author : Aditya Pranav Bhuvanapalli
-#include <netdb.h> 
-#include <netinet/in.h> 
 #include <stdlib.h> 
 #include <string.h> 
 #include <sys/socket.h> 
-#include <sys/types.h> 
+#include <arpa/inet.h>
 #include <stdio.h>
 #define SA struct sockaddr 
 
 void serverFn(int sockfd)
 {
-	char buff[100];
+	char buff[100]={'\0'};
 	FILE *fp;
-	bzero(buff, 100); //Clear the buffer
-	read(sockfd, buff, sizeof(buff)); //Read from client
+	recv(sockfd, buff, sizeof(buff),0); //Read from client
 	printf("File name from client : %s\n",buff);
-	fp=fopen(buff,"r");
-	bzero(buff, 100);	
+	fp=fopen(buff,"r");	
 	while(fgets(buff,100,fp)!=-1)
 	{
-		write(sockfd, buff, sizeof(buff)); //Write to client
+		send(sockfd, buff, sizeof(buff),0); //Write to client
 		bzero(buff, 100);
 	}
 	fclose(fp);
 }
  
 int main() 
-{ 
-	int sockfd, connfd, len; 
-	struct sockaddr_in server, client; 
-
+{  
+	struct sockaddr_in server={AF_INET, htons(8080), inet_addr("127.0.0.1")}, client; 
+		
 	// Creation of socket
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-	// Clear the socket variable
-	bzero(&server, sizeof(server)); 
-
-	// Assign IP and port of Server Socket 
-	server.sin_family = AF_INET; 
-	server.sin_addr.s_addr = INADDR_ANY; 
-	server.sin_port = htons(8080); 
-
-	// Bind socket to port
+	// Bind socket to server
 	bind(sockfd, (SA*)&server, sizeof(server));
 
 	// Wait for Client 
 	listen(sockfd, 5);
-	len = sizeof(client); 
-	connfd = accept(sockfd, (SA*)&client, &len);
+	socklen_t len = sizeof(client); 
+	int connfd = accept(sockfd, (SA*)&client, &len);
 
 	// Communicate with client 
 	serverFn(connfd); 

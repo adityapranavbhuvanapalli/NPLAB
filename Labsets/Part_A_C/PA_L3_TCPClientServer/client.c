@@ -8,15 +8,13 @@
 
 void clientFn(int sockfd)
 {
-	char buff[100];
-	bzero(buff, 100); //Clear the buffer
+	char buff[100]={'\0'};
 	printf("Enter file name : ");	
 	scanf("%s",buff);
-	write(sockfd, buff, 100); //Send file name to server
+	send(sockfd, buff, 100,0); //Send file name to server
 	do
 	{
-		//bzero(buff, 100);
-		read(sockfd, buff, 100); //Read file content from server
+		recv(sockfd, buff, 100,0); //Read file content from server
 		puts(buff);
 	}
 	while(strcmp(buff,""));
@@ -25,18 +23,10 @@ void clientFn(int sockfd)
 int main() 
 { 
 	int sockfd; 
-	struct sockaddr_in server; 
+	struct sockaddr_in server={AF_INET, htons(8080), inet_addr("127.0.0.1")}; 
 
 	// Creation of socket
-	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
-
-	// Clear the socket variable
-	bzero(&server, sizeof(server)); 
-
-	// Assign IP and port to the socket 
-	server.sin_family = AF_INET; 
-	server.sin_addr.s_addr = inet_addr("127.0.0.1"); 
-	server.sin_port = htons(8080); 
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);  
 
 	// Connect to server
 	connect(sockfd, (SA*)&server, sizeof(server));

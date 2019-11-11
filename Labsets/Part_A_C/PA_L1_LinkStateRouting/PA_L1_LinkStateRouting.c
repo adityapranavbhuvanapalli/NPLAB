@@ -77,10 +77,8 @@ int main()
         printf("\n**** From Node = %c****\n",64+i);
         printf("Node\tCost\n");
         for(j=1;j<=n;j++)
-        {   
             if(cost[i][j]!=0 && cost[i][j]!=inf)
                 printf("%c\t%d\n",64+j,cost[i][j]);
-        }
     }
 
     printf("Enter the source : ");

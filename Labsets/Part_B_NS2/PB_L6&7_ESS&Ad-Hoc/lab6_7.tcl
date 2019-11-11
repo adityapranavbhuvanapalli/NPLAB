@@ -92,7 +92,7 @@ proc finish {} {
 		  set ctr1 [expr $ctr1 + 1 ]
 	     }
 	     set thr1 [expr $ctr1 / 5 ] 
-	  
+	}  
 	puts "No of  packets transmitted  =   $ctr1" 
 	puts "Throuput  =   $thr1 packets/sec "     
 	exit 0

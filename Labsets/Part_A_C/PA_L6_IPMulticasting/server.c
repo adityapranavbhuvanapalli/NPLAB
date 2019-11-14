@@ -13,7 +13,8 @@ int main ()
 
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
-    setsockopt(sockfd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, sizeof(localInterface));
+    //setsockopt(sockfd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&localInterface, sizeof(localInterface));
+	setsockopt(sockfd, 0, 32, (char *)&localInterface, sizeof(localInterface));
 
     printf("Enter message : ");
     gets(msg);

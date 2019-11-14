@@ -12,9 +12,14 @@ int main()
 	struct ip_mreq group = {inet_addr("226.1.1.1"),INADDR_ANY};
 
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+
+	int reuse=1;
+	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&reuse, sizeof(reuse)); 
+
 	bind(sockfd, (struct sockaddr*)&addr, sizeof(addr));
 
-	setsockopt(sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&group, sizeof(group));
+	//setsockopt(sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&group, sizeof(group));
+	setsockopt(sockfd, 0, 35, (char *)&group, sizeof(group)); 
 
 	read(sockfd, msg, sizeof(msg));
 	printf("Server : %s\n", msg);

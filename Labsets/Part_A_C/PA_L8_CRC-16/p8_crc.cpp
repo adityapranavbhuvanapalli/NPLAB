@@ -31,7 +31,6 @@ int main()
 	//Receiver's End
 	cout<<endl<<"Receiver's End :"<<endl;
 	cout<<"Enter the received code word : "; cin>>recCode;
-	//recCode=codeWord;	
 	
 	for(i=0;i<dataWord.length();i++)
 	{

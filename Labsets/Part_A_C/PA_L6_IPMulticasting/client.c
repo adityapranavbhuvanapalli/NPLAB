@@ -8,7 +8,7 @@ int main()
 {
 	int sockfd;
 	char msg[1024];
-	struct sockaddr_in addr = {AF_INET,htons(5000),INADDR_ANY};
+	struct sockaddr_in addr = {AF_INET,htons(5000),inet_addr("226.1.1.1")};
 	struct ip_mreq group = {inet_addr("226.1.1.1"),INADDR_ANY};
 
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);

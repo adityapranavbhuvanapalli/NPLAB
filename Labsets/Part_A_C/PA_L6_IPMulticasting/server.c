@@ -9,7 +9,7 @@ int main ()
     int sockfd;
     char msg[1024];
     struct sockaddr_in groupaddr = {AF_INET, htons(5000),inet_addr("226.1.1.1")};
-    struct in_addr localInterface = {INADDR_ANY};
+    struct in_addr localInterface = {inet_addr("127.0.0.1")};
 
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 

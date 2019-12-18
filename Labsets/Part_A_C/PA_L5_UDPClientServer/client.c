@@ -7,7 +7,7 @@
 
 int main() 
 { 
-	int sockfd, n, len;; 
+	int sockfd, n, len; 
 	char buff[100]="Hello from the other side. Request from client"; 
 	struct sockaddr_in server={AF_INET, htons(8080), inet_addr("127.0.0.1")}; 
 
